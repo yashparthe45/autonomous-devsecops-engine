@@ -549,3 +549,4 @@ pipeline {
             echo 'Pipeline failed. Check Jenkins logs, security gates, SBOM generation, Cosign verification, DefectDojo uploads, and AI analysis reports.'
         }
     }
+}
