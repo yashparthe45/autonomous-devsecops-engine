@@ -20,3 +20,10 @@ ai-security-engine/input/*
 !ai-security-engine/input/.gitkeep
 ai-security-engine/output/*
 !ai-security-engine/output/.gitkeep
+
+# Python virtual environment
+ai-security-engine/venv/
+
+# Python cache
+__pycache__/
+*.pyc
