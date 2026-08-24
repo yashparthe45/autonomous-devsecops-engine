@@ -1,4 +1,4 @@
-pipeline {
+  pipeline {
 
     agent any
 
@@ -649,7 +649,7 @@ pipeline {
 
                         git push \
                           https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/yashparthe45/autonomous-devsecops-engine.git \
-                          HEAD:cloud-deployment
+                          HEAD:refs/heads/main
 
                         echo "============================================"
                         echo "GITOPS UPDATE SUCCESSFUL"
