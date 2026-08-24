@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: dummy-upi-app
-          image: dummy-upi-app:metrics-v1
+          image: 285364193286.dkr.ecr.us-east-1.amazonaws.com/dummy-upi-app:57
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
