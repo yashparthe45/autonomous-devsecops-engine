@@ -441,3 +441,117 @@ The Linux environment is prepared for subsequent project implementation, includi
 - Development environment prepared for the next implementation phase.
 
 **Phase Status:** Completed
+
+# Phase 2: CI/CD Foundation – Jenkins, GitHub, and Docker
+
+### Objective
+
+Establish the Continuous Integration and Continuous Delivery (CI/CD) foundation by integrating Jenkins with the GitHub repository and Docker.
+
+Jenkins acts as the automation server responsible for checking out application source code, executing pipeline stages, and coordinating the tools used throughout the DevSecOps workflow.
+
+Docker is integrated with Jenkins using Docker socket access, allowing Jenkins pipeline jobs to build and manage container images.
+
+### Tools and Technologies
+
+| Component | Technology |
+|---|---|
+| CI/CD Automation | Jenkins |
+| Source Code Management | Git, GitHub |
+| Containerization | Docker |
+| Pipeline Definition | Jenkinsfile |
+| Docker Integration | Docker Socket (Docker Outside of Docker) |
+
+### Implementation Steps
+
+**1. Configure the GitHub Repository**
+
+The project source code is maintained in the GitHub repository:
+
+[Autonomous AI-Driven DevSecOps Engine](https://github.com/yashparthe45/autonomous-devsecops-engine)
+
+The repository contains the application source code, Docker configuration, Jenkins pipeline definition, Kubernetes manifests, and supporting project files.
+
+GitHub acts as the central source code management platform for the project.
+
+**2. Set Up Jenkins**
+
+Jenkins is configured as the CI/CD automation server.
+
+The Jenkins environment is prepared to execute pipeline jobs and integrate with the required development and security tools.
+
+The pipeline uses a declarative `Jenkinsfile` stored in the project repository to define its stages and execution steps.
+
+**3. Integrate Docker with Jenkins**
+
+Docker is integrated with Jenkins through Docker socket access.
+
+This approach allows Jenkins to communicate with the Docker daemon available in the host environment without requiring a separate Docker daemon inside the Jenkins container.
+
+The integration enables Jenkins to execute Docker commands for:
+- Building application container images.
+- Running security scanning tools as containers.
+- Managing temporary containers and Docker resources.
+- Supporting application testing during pipeline execution.
+
+**4. Configure Jenkins Tool Integrations**
+
+The Jenkins environment is configured with the tools and credentials required by subsequent pipeline phases.
+
+The project Jenkinsfile references configured tools such as:
+
+- NodeJS
+- SonarScanner
+- Docker
+- AWS CLI
+
+Credential integrations are also used for services such as AWS and GitHub in the later pipeline stages.
+
+**5. Create the Jenkins Pipeline**
+
+A declarative Jenkins pipeline is defined in the repository's `Jenkinsfile`.
+
+The pipeline begins with the following foundational stages:
+
+| Pipeline Stage | Description |
+|---|---|
+| Checkout Code | Retrieves application source code using `checkout scm` |
+| DevSecOps Environment Check | Verifies the availability of Docker, curl, Node.js, npm, and AWS CLI |
+| AWS ECR Credential & Access Check | Validates AWS identity and access to the configured ECR repository |
+
+These initial stages prepare the environment before the automated security scanning and application build stages execute.
+
+**6. Validate Jenkins and Docker Integration**
+
+The integration is validated by executing pipeline commands to check the availability of the required tools and Docker environment.
+
+The pipeline verifies:
+- Source code checkout from GitHub.
+- Availability of Docker commands.
+- Availability of Node.js and npm.
+- Availability of AWS CLI.
+- Access to the configured Amazon ECR repository.
+
+### Initial CI/CD Workflow
+
+```mermaid
+flowchart TD
+    A[Developer] --> B[GitHub Repository]
+    B --> C[Jenkins Pipeline]
+    C --> D[Checkout SCM]
+    D --> E[Environment Validation]
+    E --> F[Docker Integration]
+    F --> G[AWS CLI and ECR Access Check]
+    G --> H[Ready for Security Pipeline]
+```
+
+### Implementation Outcome
+
+- Jenkins configured as the CI/CD automation server.
+- GitHub integrated as the source code repository.
+- Docker socket integration established for Jenkins.
+- Declarative pipeline created using `Jenkinsfile`.
+- Initial environment validation stages implemented.
+- AWS CLI and ECR access validation included in the pipeline.
+
+**Phase Status:** Completed
