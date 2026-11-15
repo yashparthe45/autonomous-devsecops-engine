@@ -88,68 +88,125 @@ It provides a practical application environment for demonstrating:
 
 # Project Flow and System Architecture
 
-## 1. Project Workflow
+## CI/CD Pipeline Flow
 
-The Autonomous AI-Driven DevSecOps Engine follows an integrated workflow that connects source code management, automated security testing, AI-assisted security analysis, container image management, Kubernetes deployment, and application monitoring.
+The Autonomous AI-Driven DevSecOps Engine integrates security practices into the CI/CD lifecycle. Jenkins orchestrates the build and security workflow, while automated security tools analyze the application source code, container image, and deployed application. Security evidence is further processed through DefectDojo and the Gemini-powered AI analysis layer.
 
-The overall workflow is divided into the following stages:
+### Pipeline Workflow
 
-### Stage 1: Source Code Management
+```mermaid
+flowchart TD
+    A[Developer] --> B[Push Source Code to GitHub]
+    B --> C[Jenkins CI/CD Pipeline]
+
+    C --> D[TruffleHog<br/>Secret Scanning]
+    D --> E[SonarQube<br/>Static Application Security Testing]
+    E --> F[Docker<br/>Build Container Image]
+    F --> G[Trivy<br/>Container Vulnerability Scanning]
+    G --> H[Syft<br/>Generate SBOM]
+    H --> I[Cosign<br/>Image Signing and Verification]
+
+    G --> J[Security Findings]
+    H --> K[Software Bill of Materials]
+    I --> L[Image Signature Evidence]
+
+    J --> M[Gemini AI Security Analysis]
+    K --> M
+    L --> M
+
+    J --> N[DefectDojo<br/>Vulnerability Management]
+    M --> O[AI-Assisted Security Insights]
+
+    I --> P[Amazon ECR<br/>Container Image Registry]
+    P --> Q[Amazon EKS]
+    Q --> R[Dummy UPI Application]
+
+    R --> S[OWASP ZAP<br/>Dynamic Application Security Testing]
+    S --> N
+    S --> M
+
+    C --> T[Update Kubernetes Deployment Manifest]
+    T --> U[Push Updated Manifest to GitHub]
+    U --> V[Argo CD]
+    V --> Q
+
+    R --> W[Prometheus]
+    W --> X[Grafana]
+```
+
+### 1. Source Code Management
 
 - Application source code is maintained in GitHub.
-- Code changes trigger the Jenkins CI/CD workflow.
-- Jenkins retrieves the latest source code from the repository.
+- Developers push code changes to the repository.
+- Jenkins uses the repository as the source for the CI/CD workflow.
 
-### Stage 2: Automated Security Pipeline
+### 2. Automated Security Scanning
 
-Jenkins orchestrates the security validation process using integrated security tools.
+The pipeline integrates multiple security tools to identify vulnerabilities at different stages:
 
-- **TruffleHog:** Scans source code for exposed secrets and credentials.
-- **SonarQube:** Performs Static Application Security Testing (SAST).
-- **Docker:** Builds the application container image.
-- **Trivy:** Scans the container image for known vulnerabilities.
-- **Syft:** Generates the Software Bill of Materials (SBOM).
-- **Cosign:** Signs and verifies container images.
-- **OWASP ZAP:** Performs Dynamic Application Security Testing (DAST) against the running application.
-- **DefectDojo:** Centralizes and manages vulnerability findings.
+| Tool | Purpose |
+|---|---|
+| TruffleHog | Detects exposed secrets and credentials in source code |
+| SonarQube | Performs static code analysis to identify code quality and security issues |
+| Trivy | Scans container images for known vulnerabilities |
+| Syft | Generates a Software Bill of Materials (SBOM) |
+| Cosign | Supports container image signing and signature verification |
+| OWASP ZAP | Performs dynamic application security testing against the running application |
 
-### Stage 3: AI Security Intelligence
+### 3. AI-Based Security Intelligence
 
-The AI security intelligence layer integrates Google Gemini to analyze available security evidence.
+The project incorporates a Gemini-powered AI security intelligence layer.
 
-- Processes security findings and scan information.
-- Analyzes vulnerability details and security risks.
-- Uses available SBOM and container security evidence.
-- Generates AI-assisted remediation recommendations.
+- Processes security evidence from Trivy, OWASP ZAP, SBOM generation, and Cosign.
+- Helps analyze security findings and identify relevant remediation recommendations.
+- Provides AI-assisted security insights to support vulnerability remediation.
 
-### Stage 4: Container Image Management
+### 4. Vulnerability Management
 
-- Docker packages the application into a container image.
-- Security validation is performed on the image.
-- The application image is stored in Amazon Elastic Container Registry (ECR).
+DefectDojo is integrated for vulnerability management.
 
-### Stage 5: GitOps-Based Deployment
+- Security findings are handled through a centralized vulnerability management platform.
+- Findings can be reviewed and tracked for remediation.
+- It helps organize security information from the integrated testing tools.
 
-- Jenkins updates the Kubernetes deployment manifest with the new image tag.
-- Updated Kubernetes manifests are pushed to GitHub.
-- Argo CD monitors the configured Git repository.
-- Argo CD synchronizes the desired application state with Amazon EKS.
+### 5. Container Image Management
 
-### Stage 6: Application Hosting and Load Balancing
+- Docker packages the Dummy UPI application into a container image.
+- Trivy scans the image for known vulnerabilities.
+- Syft generates the SBOM.
+- Cosign provides image signing and verification capabilities.
+- The container image is stored in Amazon Elastic Container Registry (ECR).
 
-- Amazon EKS hosts the containerized Dummy UPI application.
-- Kubernetes Deployment manages application replicas.
-- A ClusterIP Service provides internal application communication.
-- An AWS Application Load Balancer is configured separately for external traffic routing.
+### 6. GitOps-Based Deployment
 
-### Stage 7: Monitoring and Observability
+The deployment workflow uses Jenkins, GitHub, Argo CD, and Amazon EKS.
 
-- The application exposes metrics through the `/metrics` endpoint.
-- Prometheus collects application metrics.
-- Grafana visualizes application performance and availability.
-- Prometheus alerting rules identify application availability issues and HTTP 5xx errors.
+1. Jenkins updates the Kubernetes deployment manifest with the required container image tag.
+2. The updated manifest is pushed to GitHub.
+3. Argo CD monitors the Git repository.
+4. Argo CD detects the manifest change and synchronizes the desired configuration.
+5. The application is deployed to the Amazon EKS cluster.
 
----
+### 7. Dynamic Application Security Testing
+
+OWASP ZAP performs Dynamic Application Security Testing (DAST) against the running Dummy UPI application.
+
+This helps identify security issues that may only become visible when the application is running.
+
+### 8. Monitoring and Observability
+
+Prometheus and Grafana provide application monitoring and visualization.
+
+- **Prometheus:** Collects application and infrastructure metrics.
+- **Grafana:** Visualizes metrics through dashboards.
+- **Application Metrics:** The application exposes a `/metrics` endpoint using `prom-client`.
+- **Alerting:** PrometheusRule resources define conditions for application availability and HTTP 5xx errors.
+
+### Pipeline Outcome
+
+The integrated workflow combines source code security, container security, AI-assisted security analysis, vulnerability management, GitOps-based deployment, and continuous monitoring.
+
+It demonstrates how security can be incorporated throughout the application delivery lifecycle rather than being treated as a separate final-stage activity.
 
 ## 2. High-Level System Architecture
 
